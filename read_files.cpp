@@ -168,6 +168,18 @@ int main(int argc, char **argv)
    }
    // printf("file spec: %s\n", file_spec);
 
+   //  Extract base path from first filespec, and strip off filename.
+   //  base_path becomes useful when one wishes to perform
+   //  multiple searches in one path.
+   strcpy(base_path, file_spec) ;
+   char *strptr = strrchr(base_path, '\\') ;
+   if (strptr != 0) {
+       strptr++ ;  //lint !e613  skip past backslash, to filename
+      *strptr = 0 ;  //  strip off filename
+   }
+   base_len = strlen(base_path) ;
+   // printf("base path: %s\n", base_path);
+   
    result = read_files(file_spec);
    if (result < 0) {
       printf("filespec: %s, %s\n", file_spec, strerror(-result));
