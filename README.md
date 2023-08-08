@@ -1,4 +1,4 @@
-# read_files - generic utility for reading files form command-line path
+# read_files - generic utility for reading files from command-line path
 This application is copyright (c) 2023  Derell Licht  
 This program, and its source code, are distributed as unrestricted freeware.
 You can use them for any purpose, personal or commercial, in whole or in part,
