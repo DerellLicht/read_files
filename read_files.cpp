@@ -70,17 +70,27 @@ int read_files(char *filespec)
          fn_okay = 0;
       else if ((fdata.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != FILE_ATTRIBUTE_DIRECTORY)
          fn_okay = 1;
+   
+         //  skip '.' and '..', but NOT .ncftp (for example)
+      else if (strcmp(fdata.cFileName, ".")  == 0  ||
+               strcmp(fdata.cFileName, "..") == 0) {
+         fn_okay = 0;
+      }
+      else {
+         fn_okay = 1;
+      }
+
       //  For directories, filter out "." and ".."
-      else if (fdata.cFileName[0] != '.') //  fn=".something"
-         fn_okay = 1;
-      else if (fdata.cFileName[1] == 0)   //  fn="."
-         fn_okay = 0;
-      else if (fdata.cFileName[1] != '.') //  fn="..something"
-         fn_okay = 1;
-      else if (fdata.cFileName[2] == 0)   //  fn=".."
-         fn_okay = 0;
-      else
-         fn_okay = 1;
+      // else if (fdata.cFileName[0] != '.') //  fn=".something"
+      //    fn_okay = 1;
+      // else if (fdata.cFileName[1] == 0)   //  fn="."
+      //    fn_okay = 0;
+      // else if (fdata.cFileName[1] != '.') //  fn="..something"
+      //    fn_okay = 1;
+      // else if (fdata.cFileName[2] == 0)   //  fn=".."
+      //    fn_okay = 0;
+      // else
+      //    fn_okay = 1;
 
       if (fn_okay) {
          // printf("DIRECTORY %04X %s\n", fdata.attrib, fdata.cFileName) ;
@@ -183,16 +193,17 @@ int main(int argc, char **argv)
    result = read_files(file_spec);
    if (result < 0) {
       printf("filespec: %s, %s\n", file_spec, strerror(-result));
+      return 1 ;
    }
-   else {
-      printf("filespec: %s, %u found\n", file_spec, filecount);
-      if (filecount > 0) {
-         puts("");
-         for (ffdata *ftemp = ftop; ftemp != NULL; ftemp = ftemp->next) {
-            printf("%s\n", ftemp->filename);
-         }
 
+   //  now, do something with the files that you found   
+   printf("filespec: %s, %u found\n", file_spec, filecount);
+   if (filecount > 0) {
+      puts("");
+      for (ffdata *ftemp = ftop; ftemp != NULL; ftemp = ftemp->next) {
+         printf("%s\n", ftemp->filename);
       }
+
    }
    return 0;
 }
